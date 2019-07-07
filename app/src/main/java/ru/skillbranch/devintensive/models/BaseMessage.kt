@@ -18,8 +18,8 @@ abstract class BaseMessage(
             chat: Chat,
             date: Date = Date(),
             type: String = "text",
-            isIncoming: Boolean = false,
-            payload: Any?
+            payload: Any,
+            isIncoming: Boolean = false
         ): BaseMessage {
             lastId++
             return when (type) {
