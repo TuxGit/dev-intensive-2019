@@ -1,6 +1,5 @@
-package ru.skillbranch.devintensive.extentions
+package ru.skillbranch.devintensive.extensions
 
-import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,4 +33,9 @@ fun Date.add(value: Int, units: TimeUnits=TimeUnits.SECOND): Date {
 
     this.time = time
     return this
+}
+
+fun Date.humanizeDiff(): String {
+    // TODO
+    return ""
 }

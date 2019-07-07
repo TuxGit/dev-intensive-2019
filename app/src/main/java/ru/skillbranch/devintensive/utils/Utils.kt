@@ -13,4 +13,14 @@ object Utils {
         // return Pair(firstName, lastName)
         return firstName to lastName
     }
+
+    fun transliteration(s: String): String {
+        // TODO
+        return ""
+    }
+
+    fun toInitials(firstName: String?, lastName: String?): String? {
+        // TODO
+        return ""
+    }
 }
