@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         textTxt.text = benderObj.askQuestion()
 
+        messageEt.setText(savedInstanceState?.getString("MESSAGE") ?: "")
+
         sendBtn.setOnClickListener(this)
     }
 
@@ -73,9 +75,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
+        // переместить вниз, как это работает???
         super.onSaveInstanceState(outState)
+
         outState?.putString("STATUS", benderObj.status.name)
         outState?.putString("QUESTION", benderObj.question.name)
+        outState?.putString("MESSAGE", messageEt.text.toString())
+
         Log.d("M_MainActivity", "onSaveInstanceState ${benderObj.status.name} ${benderObj.question.name}")
     }
 
