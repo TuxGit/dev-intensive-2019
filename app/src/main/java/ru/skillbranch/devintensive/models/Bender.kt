@@ -1,5 +1,7 @@
 package ru.skillbranch.devintensive.models
 
+import android.util.Log
+
 class Bender(var status: Status = Status.NORMAL, var question: Question = Question.NAME) {
     var wrongAnswerCount = 0 // Int
 
@@ -13,11 +15,19 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
     }
 
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> {
-        return if (question.answers.contains(answer)) {
+        val validateError = validate(answer)
+        Log.d("M_MainActivity", "listenAnswer error: $validateError")
+
+        return if (question == Question.IDLE) {
+            question.question to status.color
+        } else if (validateError != null) {
+            "$validateError\n${question.question}" to status.color
+        } else if (question.answers.contains(answer.toLowerCase())) {
             wrongAnswerCount = 0
             question = question.nextQuestion()
             "Отлично - ты справился\n${question.question}" to status.color
         } else {
+            // TODO - при вопросе IDLE не надо накручивать неправильные ответы
             wrongAnswerCount++
             if (wrongAnswerCount < 3) {
                 status = status.nextStatus()
@@ -68,5 +78,44 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         };
 
         abstract fun nextQuestion(): Question
+    }
+
+    // TODO - слить в enum Question
+    private fun validate(answer: String): String? {
+        var error : String? = null
+
+        when (question) {
+            Question.NAME -> {
+                if (answer.isBlank() || !answer[0].isUpperCase()) {
+                    error = "Имя должно начинаться с заглавной буквы"
+                }
+            }
+            Question.PROFESSION -> {
+                if (answer.isBlank() || !answer[0].isLowerCase()) {
+                    error = "Профессия должна начинаться со строчной буквы"
+                }
+            }
+            Question.MATERIAL -> {
+                // val materialRegex = Regex("[^\\d]+")
+                val materialRegex = Regex("\\d+")
+                if (answer.isBlank() || materialRegex.containsMatchIn(answer)) {
+                    error = "Материал не должен содержать цифр"
+                }
+            }
+            Question.BDAY -> {
+                val bdayRegex = Regex("\\d+")
+                if (answer.isBlank() || !bdayRegex.matches(answer)) {
+                    error = "Год моего рождения должен содержать только цифры"
+                }
+            }
+            Question.SERIAL -> {
+                val serialRegex = Regex("\\d+")
+                if (answer.isBlank() || !serialRegex.matches(answer) || answer.length != 7) {
+                    error = "Серийный номер содержит только цифры, и их 7"
+                }
+            }
+            Question.IDLE -> {}
+        }
+        return error
     }
 }
