@@ -26,6 +26,8 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var viewFields: Map<String, TextView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // TODO - set custom theme this before super and setContentView
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_profile)
@@ -46,6 +48,13 @@ class ProfileActivity : AppCompatActivity() {
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
         viewModel.getProfileData().observe(this, Observer { updateUI(it) })
+        viewModel.getTheme().observe(this, Observer { updateTheme(it) })
+    }
+
+    private fun updateTheme(mode: Int) {
+        Log.d("M_ProfileActivity", "updateTheme")
+        // вызывает пересоздание activity!!!
+        delegate.setLocalNightMode(mode)
     }
 
     private fun updateUI(profile: Profile) {
@@ -81,6 +90,10 @@ class ProfileActivity : AppCompatActivity() {
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
         }
+
+        btn_switch_theme.setOnClickListener {
+            viewModel.switchTheme()
+        }
     }
 
     private fun showCurrentMode(isEditMode: Boolean) {
@@ -108,9 +121,9 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             val icon = if (isEditMode) {
-                resources.getDrawable(R.drawable.ic_save_black_24dp)
+                resources.getDrawable(R.drawable.ic_save_black_24dp, theme)
             } else {
-                resources.getDrawable(R.drawable.ic_edit_black_24dp)
+                resources.getDrawable(R.drawable.ic_edit_black_24dp, theme)
             }
 
             background.colorFilter = filter
