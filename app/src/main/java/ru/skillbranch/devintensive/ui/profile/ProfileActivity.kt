@@ -29,9 +29,9 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // TODO - set custom theme this before super and setContentView
-        setTheme(R.style.SplashTheme) // можно задать в манифесте, как тему по умолчанию
+        // setTheme(R.style.SplashTheme) // можно задать в манифесте, как тему по умолчанию
         super.onCreate(savedInstanceState)
-        setTheme(R.style.AppTheme)
+        // setTheme(R.style.AppTheme)
 
         setContentView(R.layout.activity_profile_constraint)
 
@@ -98,33 +98,49 @@ class ProfileActivity : AppCompatActivity() {
             viewModel.switchTheme()
         }
 
-        val watcher = object : TextWatcher {
+        // val watcher =
+        et_repository.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                Log.d("M_ProfileActivity", "repository afterTextChanged: ${s.toString()}")
+                // Log.d("M_ProfileActivity", "repository afterTextChanged: ${s.toString()}")
 
-                val regexp = Regex("^(?:https://)?(?:www\\.)?github\\.com/([\\-\\w]+)$") // [a-zA-z0-9]+
-                val matchResult = regexp.find(s.toString()) // regexp.matchEntire(s.toString())
-                val repoName = matchResult?.groupValues?.get(1)
-
-                // TODO - join checks in fun
-                if (s.toString().isBlank() || validateRepositoryName(repoName)) {
-                    wr_repository.error = null
-                    // wr_repository.isErrorEnabled = false // test
-                } else {
-                    wr_repository.error = "Невалидный адрес репозитория"
-                    // wr_repository.isErrorEnabled = true // test
-                }
+                // val regexp = Regex("^(?:https://)?(?:www\\.)?github\\.com/([\\-\\w]+)$") // [a-zA-z0-9]+
+                // val matchResult = regexp.find(s.toString()) // regexp.matchEntire(s.toString())
+                // val repoName = matchResult?.groupValues?.get(1)
+                //
+                // // TODO - join checks in fun
+                // if (s.toString().isBlank() || validateRepositoryName(repoName)) {
+                //     wr_repository.error = null
+                //     // wr_repository.isErrorEnabled = false // test
+                // } else {
+                //     wr_repository.error = "Невалидный адрес репозитория"
+                //     // wr_repository.isErrorEnabled = true // test
+                // }
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+                // val s = s.toString()
+                if (!s.isNullOrBlank()) {
+                    val regexp = Regex("^(?:https://)?(?:www\\.)?github\\.com/([\\-\\w]+)$") // [a-zA-z0-9]+
+                    val matchResult = regexp.find(s) // regexp.matchEntire(s.toString())
+                    val repoName = matchResult?.groupValues?.get(1)
+
+                    // TODO - join checks in fun
+                    if (s.isBlank() || validateRepositoryName(repoName)) {
+                        wr_repository.error = null
+                        wr_repository.isErrorEnabled = false // test
+                    } else {
+                        wr_repository.error = "Невалидный адрес репозитория"
+                        wr_repository.isErrorEnabled = true // test
+                    }
+                }
             }
-        }
-        et_repository.addTextChangedListener(watcher)
+        })
         // et_repository.removeTextChangedListener(watcher)
     }
 
